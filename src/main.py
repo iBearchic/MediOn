@@ -14,21 +14,22 @@ async def start(update: Update, context: CallbackContext) -> None:
             "Буду рад, если Вы поможете своими данными улучшить мои прогнозы!"
     await update.message.reply_text(text)
 
-async def echo(update: Update, context: CallbackContext) -> None:
-    """Эхо ответ на сообщение пользователя."""
+async def cur_status(update: Update, context: CallbackContext) -> None:
+    """Текущее состояние разработки бота"""
 
     text = "Пока что я нахожусь в разработке..."
     await update.message.reply_text(text)
 
+
 def main() -> None:
-    """Запуск бота."""
-    # Создаем Application и передаем ему токен вашего бота.
+    """Запуск бота"""
+
     TOKEN = os.getenv('TELEGRAM_TOKEN')
     application = Application.builder().token(TOKEN).build()
 
     # Различные обработчики команд
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+    application.add_handler(CommandHandler("cur_status", cur_status))
 
     # Начинаем поиск обновлений
     application.run_polling()
