@@ -28,7 +28,7 @@ async def register(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not telegram_nickname:
         await update.message.reply_text("Для регистрации необходимо иметь username в Telegram")
         return
-    
+
     async with aiohttp.ClientSession() as session:
         async with session.post(
             'http://localhost:8000/register/', 

@@ -19,7 +19,7 @@ async def get_db():
     async with AsyncSessionLocal() as session:
         yield session
 
-class UserRegistration(BaseModel):
+class UserORM(BaseModel):
     telegram_nickname: str
     telegram_id: int
 
