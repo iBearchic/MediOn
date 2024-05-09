@@ -6,7 +6,7 @@
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 
 
-### 1. Разработка Telegram бота
+### 1. Разработка Telegram бота [@medionlinebot](https://t.me/medionlinebot "MediON")
 
 #### 1.1 Функции бота:
 - **Принятие данных от пользователя**: бот должен запросить у пользователя симптомы и подтвержденный диагноз, затем сохранить эти данные в формате JSON.
