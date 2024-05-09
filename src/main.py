@@ -14,7 +14,7 @@ async def start(update: Update, context: CallbackContext) -> None:
             "Буду рад, если Вы поможете своими данными улучшить мои прогнозы!"
     await update.message.reply_text(text)
 
-async def cur_status(update: Update, context: CallbackContext) -> None:
+async def status(update: Update, context: CallbackContext) -> None:
     """Текущее состояние разработки бота"""
 
     text = "Пока что я нахожусь в разработке..."
@@ -29,7 +29,7 @@ def main() -> None:
 
     # Различные обработчики команд
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("cur_status", cur_status))
+    application.add_handler(CommandHandler("status", status))
 
     # Начинаем поиск обновлений
     application.run_polling()
