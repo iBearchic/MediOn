@@ -1,38 +1,19 @@
-import os
-from dotenv import load_dotenv
-from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
+from fastapi import HTTPException, FastAPI, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from database import get_db, User, UserRegistration
+from sqlalchemy.future import select
 
-# Загрузка переменных окружения из файла .env
-load_dotenv()
+app = FastAPI()
 
-async def start(update: Update, context: CallbackContext) -> None:
-    """Отправляет приветственное сообщение и помощь по командам."""
-
-    text = "Привет! Я MediON - твой Онлайн Терапевт! \n" \
-            "Учусь по симптомам определять наиболее вероятный диагноз.\n" \
-            "Буду рад, если Вы поможете своими данными улучшить мои прогнозы!"
-    await update.message.reply_text(text)
-
-async def status(update: Update, context: CallbackContext) -> None:
-    """Текущее состояние разработки бота"""
-
-    text = "Пока что я нахожусь в разработке..."
-    await update.message.reply_text(text)
-
-
-def main() -> None:
-    """Запуск бота"""
-
-    TOKEN = os.getenv('TELEGRAM_TOKEN')
-    application = Application.builder().token(TOKEN).build()
-
-    # Различные обработчики команд
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("status", status))
-
-    # Начинаем поиск обновлений
-    application.run_polling()
-
-if __name__ == '__main__':
-    main()
+@app.post("/register/")
+async def register_user(user: UserRegistration,  db: AsyncSession = Depends(get_db)):
+    existing_user = await db.execute(select(User).filter(User.telegram_id == user.telegram_id))
+    if existing_user.scalars().first() is not None:
+        return {"message": "Вы уже зарегистрированы!"}
+    
+    new_user = User(
+        telegram_nickname=user.telegram_nickname, 
+        telegram_id=user.telegram_id)
+    db.add(new_user)
+    await db.commit()
+    return {"message": "Вы успешно зарегистрированы!"}
