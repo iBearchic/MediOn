@@ -1,11 +1,12 @@
+from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, Integer, String, BigInteger, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 from dotenv import load_dotenv
 import os
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 # Загрузка переменных окружения из файла .env
 load_dotenv()
@@ -33,3 +34,20 @@ class User(Base):
     telegram_nickname = Column(String, unique=True, index=True)
     registered_at = Column(DateTime(timezone=True), default=func.now())
 
+class UserHealthRecordORM(BaseModel):
+    telegram_id: int = Field(description="The Telegram ID")
+    symptoms: str = Field(description="Описание симптомов, отправляемые пользоватлем")
+    disease: str = Field(description="Диагноз или заболевание исходя из симптомов")
+    post_date: datetime = Field(default_factory=datetime.now, description="Дата и время публикации записи")
+
+    class Config:
+        orm_mode = True
+
+class UserHealthRecord(Base):
+    __tablename__ = 'user_health_records'
+
+    id = Column(Integer, primary_key=True)
+    telegram_id = Column(Integer, index=True)  # Добавлен индекс для улучшения производительности поиска
+    symptoms = Column(String)
+    disease = Column(String)
+    post_date = Column(DateTime, default=func.now(), onupdate=func.now())
