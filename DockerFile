@@ -1,0 +1,17 @@
+# Выбираем базовый образ
+FROM python:3.11-slim
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+# Копируем файлы зависимостей и устанавливаем их
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Копируем все остальные файлы приложения в контейнер
+COPY . .
+
+# Запускам команду для FastAPI сервера и Telegram бота
+
+WORKDIR /app/src
+CMD ["bash", "-c", "python3 -m uvicorn main:app --host 0.0.0.0 --port 8000 & python3 bot.py"]
